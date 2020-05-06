@@ -10,7 +10,7 @@ namespace RestaurantApp
     class Program
     {
         //Database Location
-        private static string cs = @"server= 127.0.0.1;userid=root;password=root;database=SampleRestaurantDatabase;port=3307";
+        private static string cs = @"server= 127.0.0.1;userid=root;password=root;database=SampleRestaurantDatabase;port=8889";
         //Output Location
         private static string _directory = AppDomain.CurrentDomain.BaseDirectory + "/output/";
         static void Main(string[] args)
