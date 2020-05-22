@@ -1,7 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 
 namespace RestaurantApp
 {
@@ -16,6 +18,10 @@ namespace RestaurantApp
             Console.WriteLine("3. Sort Restaurants From Best to Worst");
             Console.WriteLine("4. Sort Restaurants From Worst to Best");
             Console.WriteLine("5. Show Only X and Up");
+            Console.WriteLine("6. Show Average of Reviews for Restaurants");
+            Console.WriteLine("7. Dinner Spinner (Selects Random Restaurant)");
+            Console.WriteLine("8. Top 10 Restaurants");
+            Console.WriteLine("9. Back To Main Menu");
             string option = Console.ReadLine();
             switch (option)
             {
@@ -64,6 +70,18 @@ namespace RestaurantApp
                             FiveStarRatingMenu();
                             break;
                     }
+                    break;
+                case "6":
+                    ShowAverageReviewsForRestaurants();
+                    break;
+                case "7":
+                    DinnerSpinner();
+                    break;
+                case "8":
+                    TopTenRestaurants();
+                    break;
+                case "9":
+                    Program.Main(null);
                     break;
                 default:
                     Console.WriteLine("Incorrect option chosen, try again.");
@@ -230,6 +248,96 @@ namespace RestaurantApp
                     Console.Write(string.Format("|{0}|", reader["restaurantname"].ToString()));
                     ColorRating(reader["overallrating"].ToString());
                     Console.WriteLine();
+                }
+                Database.con.Close();
+            }
+        }
+        private static void ShowAverageReviewsForRestaurants()
+        {
+            //Initiates a MySQL connection and executes a MySQL command to search for two columns in a table, where a join is included to obtain reference data from another table
+            DataTable dt = new DataTable();
+            _ = new Database(Program.cs);
+            using (MySqlCommand cmd = new MySqlCommand("select rp.restaurantname,avg(rr.reviewscore) as average from restaurantprofiles rp join restaurantreviews rr on rp.id = rr.restaurantid group by rp.restaurantname", Database.con))
+            {
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!string.IsNullOrWhiteSpace(reader["average"].ToString()))
+                    {
+                        Console.Write(reader["restaurantname"].ToString() + " ");
+                        BarGraphs.DrawGraph(reader["average"].ToString());
+                        Console.Write(" Average: " + reader["average"].ToString() + "%");
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.Write(reader["restaurantname"].ToString() + " ");
+                        BarGraphs.DrawGraph(reader["average"].ToString());
+                        Console.Write("Average: N/A");
+                        Console.WriteLine();
+                    }
+                }
+                Database.con.Close();
+            }
+        }
+        private static void DinnerSpinner()
+        {
+            //Initiates a MySQL connection and executes a MySQL command to search for two columns in a table, where a specific row is equal to the given value
+            DataTable dt = new DataTable();
+            _ = new Database(Program.cs);
+            using (MySqlCommand cmd = new MySqlCommand("select rp.restaurantname,avg(rr.reviewscore) as average from restaurantprofiles rp join restaurantreviews rr on rp.id = rr.restaurantid group by rp.restaurantname order by rand() limit 1", Database.con))
+            {
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!string.IsNullOrWhiteSpace(reader["average"].ToString()))
+                    {
+                        Console.Write(reader["restaurantname"].ToString() + " ");
+                        BarGraphs.DrawGraph(reader["average"].ToString());
+                        Console.Write(" Average: " + reader["average"].ToString() + "%");
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.Write(reader["restaurantname"].ToString() + " ");
+                        BarGraphs.DrawGraph(reader["average"].ToString());
+                        Console.Write("Average: N/A");
+                        Console.WriteLine();
+                    }
+                }
+                Database.con.Close();
+            }
+        }
+        private static void TopTenRestaurants()
+        {
+            //Initiates a MySQL connection and executes a MySQL command to search for two columns in a table, where a join is included to obtain reference data from another table
+            DataTable dt = new DataTable();
+            _ = new Database(Program.cs);
+            using (MySqlCommand cmd = new MySqlCommand("select rp.restaurantname,avg(rr.reviewscore) as average from restaurantprofiles rp join restaurantreviews rr on rp.id = rr.restaurantid where rr.reviewscore >= 70 group by rp.restaurantname desc limit 10", Database.con))
+            {
+                MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                da.Fill(dt);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!string.IsNullOrWhiteSpace(reader["average"].ToString()))
+                    {
+                        Console.Write(reader["restaurantname"].ToString() + " ");
+                        BarGraphs.DrawGraph(reader["average"].ToString());
+                        Console.Write(" Average: " + reader["average"].ToString() + "%");
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.Write(reader["restaurantname"].ToString() + " ");
+                        BarGraphs.DrawGraph(reader["average"].ToString());
+                        Console.Write("Average: N/A");
+                        Console.WriteLine();
+                    }
                 }
                 Database.con.Close();
             }

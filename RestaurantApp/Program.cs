@@ -5,10 +5,10 @@ namespace RestaurantApp
     class Program
     {
         //Database Location
-        public static string cs = @"server= 127.0.0.1;userid=root;password=root;database=SampleRestaurantDatabase;port=3307";
+        public static string cs = @"server= 127.0.0.1;userid=root;password=root;database=SampleRestaurantDatabase;port=3306";
         //Output Location
         public static string _directory = AppDomain.CurrentDomain.BaseDirectory + "/output/";
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             //Present menu to the user and iterate over chosen option(s)
             Console.WriteLine("Hello Admin, What Would You Like To Do Today?");
